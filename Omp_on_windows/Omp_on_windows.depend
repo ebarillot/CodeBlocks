@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1514140574 source:d:\developpements\codeblocks\omp_on_windows\main.c
+	<stdio.h>
+	<stdlib.h>
+
+1517828604 source:d:\developpements\codeblocks\omp_on_windows\product_vector_matrix_omp.c
+	<omp.h>
+	<math.h>
+	<stdlib.h>
+	<stdio.h>
+
