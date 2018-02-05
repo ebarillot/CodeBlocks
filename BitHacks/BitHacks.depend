@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1278190391 source:/home/emmanuel/Documents/Developpements/CodeBlocks/BitHacks/couting_bits.c
+	<stdio.h>
+	<stdlib.h>
+
+1278190102 source:/home/emmanuel/Documents/Developpements/CodeBlocks/BitHacks/main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

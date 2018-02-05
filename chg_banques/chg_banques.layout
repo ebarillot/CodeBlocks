@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="Astring.c" open="0" top="0" tabpos="2">
+		<Cursor position="284" topLine="0" />
+	</File>
+	<File name="Cerr.c" open="0" top="0" tabpos="5">
+		<Cursor position="232" topLine="0" />
+	</File>
+	<File name="Cerr.h" open="0" top="0" tabpos="4">
+		<Cursor position="93" topLine="0" />
+	</File>
+	<File name="Fichier.c" open="0" top="0" tabpos="2">
+		<Cursor position="2775" topLine="97" />
+	</File>
+	<File name="List.c" open="0" top="0" tabpos="7">
+		<Cursor position="183" topLine="0" />
+	</File>
+	<File name="chg_banques.c" open="0" top="0" tabpos="1">
+		<Cursor position="6815" topLine="201" />
+	</File>
+	<File name="chg_banques.h" open="0" top="0" tabpos="3">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="mallocCtl.c" open="0" top="0" tabpos="9">
+		<Cursor position="49" topLine="0" />
+	</File>
+	<File name="mallocCtl.h" open="0" top="0" tabpos="3">
+		<Cursor position="78" topLine="0" />
+	</File>
+	<File name="temps.c" open="0" top="0" tabpos="10">
+		<Cursor position="1390" topLine="97" />
+	</File>
+	<File name="temps.h" open="0" top="0" tabpos="8">
+		<Cursor position="639" topLine="12" />
+	</File>
+</CodeBlocks_layout_file>

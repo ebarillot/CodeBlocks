@@ -1,0 +1,5 @@
+OPTIONCC_LOCAL = ${CCOOPTELF} -fno-builtin
+CCDYN_LOCAL = 
+LDFLAGS_LOCAL = ${CCOOPTELF} -fno-builtin
+LIB_LOCAL = 
+DYNLIBEXT = so

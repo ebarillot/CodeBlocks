@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1452893605 source:d:\emmanuel\developpements\codeblocks\arrondi\arrondi\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+

@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1384291830 source:d:\emmanuel\mes_documents\developpements\codeblocks\opencl-1\main.c
+	<CL/cl.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1373544432 c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\cl\cl.h
+	<OpenCL/cl_platform.h>
+	<CL/cl_platform.h>
+
+1373544432 c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\cl\cl_platform.h
+	<AvailabilityMacros.h>
+	<stdint.h>
+	<stddef.h>
+	<altivec.h>
+	<intrin.h>
+	<xmmintrin.h>
+	<intrin.h>
+	<emmintrin.h>
+	<mmintrin.h>
+	<intrin.h>
+	<immintrin.h>
+

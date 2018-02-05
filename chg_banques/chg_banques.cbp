@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="chg_banques" />
+		<Option makefile="makefile" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="chg_banques" prefix_auto="1" extension_auto="1" />
+				<Option object_output="objs" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-t 2 -i fic/banque-guichet.txt -o chg_banques.out" />
+			</Target>
+			<Target title="Release">
+				<Option output="chg_banques" prefix_auto="1" extension_auto="1" />
+				<Option object_output="objs" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-t 0 -i fic/banque-guichet.txt -o chg_banques.out" />
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-I ./exploit -I ./traceTP" />
+			<Add option="-D_LINUX" />
+		</Compiler>
+		<Linker>
+			<Add option="-lrt" />
+		</Linker>
+		<Unit filename="Astring.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="Astring.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="Banques.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="Cerr.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="Cerr.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="Fichier.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="Fichier.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="List.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="List.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="Qsort.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="Qsort.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="chg_banques.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="chg_banques.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="exploit/exploit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="exploit/exploit.h" />
+		<Unit filename="mallocCtl.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="mallocCtl.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="temps.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="temps.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="traceTP/traceTP.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="traceTP/traceTP.h" />
+		<Unit filename="utile.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="utile.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

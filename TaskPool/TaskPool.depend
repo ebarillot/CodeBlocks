@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1273594960 source:/home/emmanuel/Documents/Developpements/CodeBlocks/TaskPool/TaskPool/main.c
+	<stdio.h>
+	<stdlib.h>
+

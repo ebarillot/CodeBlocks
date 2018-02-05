@@ -1,0 +1,631 @@
+//  --------------------------------------------------------------------
+// |        |         |            |                                   |
+// |  DATE  | Version |  Auteur    | Commentaires                      |
+// |--------|---------|------------|-----------------------------------|
+// |20/02/03|   01    | E.BARILLOT | Création                          |
+//  --------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <sqlca.h>	// oracle
+#include <oraca.h>
+
+#include <ortutil.h>
+#include <ortproc.h>
+#include <exploit.h>	// pour CODE_FIN_ERREUR_APPLICATIVE
+
+#include "Cnxora.h"
+#include "Erreur.h"
+#include "inout.h"
+#include "Utile.h"
+#include "Message.h"
+#include "Date_formats.h"
+
+#define DEFAULT_EOL   "\n"
+
+//************************************************************************
+// variables globales
+//************************************************************************
+
+
+//************************************************************************
+// constructeur
+//************************************************************************
+Cnxora*  Cnxora_new (char* nomBase)
+{
+  int   ret = 0;
+  Cnxora* cnxora = NULL;
+  IN();
+  if ((cnxora = malloc (sizeof (Cnxora))) == NULL) {
+    Erreur_set(CLA_APP, nomFonction, "Probleme d'allocation memoire");
+  }
+  Message_printDebug("MALLOC","%s(), cnxora: 0x%x, %d",nomFonction,cnxora,sizeof(Cnxora));
+  memset (cnxora, 0, sizeof (Cnxora));
+  strcpy (cnxora->nomBase, nomBase);
+  OUT(ret);
+  return cnxora;
+}
+
+//************************************************************************
+// positionnement des champs
+//************************************************************************
+int Cnxora_set (Cnxora* cox, char* nomBase, int connecte)
+{
+  int   ret = 0;
+  IN();
+  if (nomBase == NULL) {
+    Erreur_set(CLA_APP, nomFonction, "Nom de BDD absent");
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+  if (strlen(nomBase) >= L_nomBase) {
+    Erreur_set(CLA_APP, nomFonction, "Nom de BDD trop long (limite=%d)",L_nomBase);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+  strcpy(cox->nomBase, nomBase);
+  cox->connecte = (connecte != 0)? 1:0;
+  XIT:
+  OUT(ret);
+  return ret;
+}
+
+
+//************************************************************************
+// connexion à la base
+// Utilise les paramètres de $OUTIL/connexion.ora
+//************************************************************************
+int Cnxora_connect(Cnxora*  cox)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  {
+    char user[200],password[200],cs[200];
+    ret = InfoConnect(nomBase,user,password,cs);
+    if (ret == 99) {
+      EXEC SQL CONNECT :user IDENTIFIED BY :password AT :nomBase;
+      SQL_ERREUR {
+        ret = 5;
+      }
+      else {
+        ret = 0;
+      }
+    }
+    else if (ret == 0) {
+      EXEC SQL CONNECT :user IDENTIFIED BY :password AT :nomBase USING :cs;
+      SQL_ERREUR {
+        ret = 5;
+      }
+    }
+  }
+  if (ret != 0) {
+    Erreur_set(CLA_ORA, nomFonction, "Connexion sur la base %s impossible: %d, %s, %s",
+              nomBase, ret, Cnxora_libelle_erreur_nconnexion(ret), SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+  cox->connecte = 1;
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// libellés des erreurs de connexion
+//************************************************************************
+char* Cnxora_libelle_erreur_nconnexion (int ret)
+{
+  IN();
+  OUT(ret);
+  switch (ret)
+  {
+    case   0 :return("Connexion ORACLE réussie");
+    case   1 :return("Variable $OUTIL non définie");
+    case   2 :return("Fichier conexion.ora non trouvé");
+    case   3 :return("Nom d'utilisateur ou mot de passe non trouvé dans le fichier connexion.ora");
+    case   4 :return("Variable $USERNAMEORA ou $PASSWORDORA non définies");
+    case   5 :return("Connexion ORACLE refusée");
+    default  :return("Erreur inconnue");
+  }
+}
+
+//************************************************************************
+// retourne 1 si connecte à la base 0 sinon
+//************************************************************************
+int Cnxora_estConnecte(Cnxora*  cox)
+{
+  int   ret = 0;
+  IN();
+  if (cox == NULL) {
+    ret = 0;
+  }
+  else {
+    ret = cox->connecte;
+  }
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// retourne 1 si connecte à la base 0 sinon
+//************************************************************************
+char* Cnxora_getNomBase(Cnxora* cox)
+{
+  int   ret = 0;
+  IN();
+  OUT(ret);
+  return (cox->nomBase);
+}
+
+//************************************************************************
+// commit
+//************************************************************************
+int Cnxora_commit(Cnxora* cox)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL AT :nomBase COMMIT WORK;
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// rollback
+//************************************************************************
+int Cnxora_rollback(Cnxora* cox)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL AT :nomBase ROLLBACK WORK;
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// commit Q
+//************************************************************************
+int Cnxora_commitQ(Cnxora*  cox)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL AT :nomBase COMMIT WORK RELEASE;
+  cox->connecte = 0;
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// rollback Q
+//************************************************************************
+int Cnxora_rollbackQ(Cnxora*  cox)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL AT :nomBase ROLLBACK WORK RELEASE;
+  cox->connecte = 0;
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// modifie la session pour pouvoir utiliser tkprof
+//************************************************************************
+int Cnxora_tkprof(Cnxora* cox)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL at :nomBase ALTER SESSION set sql_trace=true;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur ALTER SESSION %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// récupère des NLS_PARAMETERS
+//************************************************************************
+int   Cnxora_getNlsParameters (Cnxora*  cox, char* date_format, char* numeric_characters)
+{
+  int     ret = 0;
+  char*   nomBase = cox->nomBase;
+  // variables locales dimensionées ici sont indispensables pour Pro*C
+  // car sinon il n'arrive pas à déterminer la longueur de ces "réceptacles"
+  // à l'exécution
+  char    v_date_format[50] = "";
+  char    v_numeric_characters[50] = "";
+  IN();
+  if (date_format == NULL) {
+    Erreur_set (CLA_APP, nomFonction, "Variable date_format est NULL");
+    ret = CODE_FIN_ERREUR_APPLICATIVE;
+    goto XIT;
+  }
+  if (numeric_characters == NULL) {
+    Erreur_set (CLA_APP, nomFonction, "Variable numeric_characters est NULL");
+    ret = CODE_FIN_ERREUR_APPLICATIVE;
+    goto XIT;
+  }
+  date_format[0] = 0x00;
+  numeric_characters[0] = 0x00;
+  // un bloc PL pour ne faire qu'un échange avec la BDD
+  EXEC SQL at :nomBase EXECUTE
+  DECLARE
+  BEGIN
+    select value into :v_date_format
+        from nls_session_parameters
+        where parameter = 'NLS_DATE_FORMAT';
+    select value into :v_numeric_characters
+        from nls_session_parameters
+        where parameter = 'NLS_NUMERIC_CHARACTERS';
+  END;
+  END-EXEC;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur select nls_session_parameters %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+  strcpy(date_format,v_date_format);
+  strcpy(numeric_characters,v_numeric_characters);
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// modifie des NLS_PARAMETERS pour le session
+// TODO ATTENTION : SQL-02122 conflit sur le curseur
+// il semblerait que sqllib essaie d'utiliser le même nom de curseur pour
+// les connexions différentes d'où conflit.
+// Pas de pb quand l'order alter session est "en dur"
+//************************************************************************
+int   Cnxora_setNlsParameters (Cnxora* cox, char* date_format, char* numeric_characters)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  char  v_date_format[50+1];
+  char  v_numeric_characters[50+1];
+  char  requete[2000+1];
+  IN();
+  memset(requete,0,2000);
+  memset(v_date_format,0,50);
+  memset(v_numeric_characters,0,50);
+  if (date_format == NULL) {
+    Erreur_set (CLA_ORA, nomFonction, "date_format est null", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_APPLICATIVE;
+    goto XIT;
+  }
+  else {
+    strncpy (v_date_format, date_format, 50);
+  }
+  if (numeric_characters == NULL) {
+    Erreur_set (CLA_ORA, nomFonction, "numeric_characters est null", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_APPLICATIVE;
+    goto XIT;
+  }
+  else {
+    strncpy (v_numeric_characters, numeric_characters, 50);
+  }
+  strcpy(requete,"alter session set nls_date_format='");
+  strcat(requete,v_date_format);
+  strcat(requete,"'");
+  strcat(requete,"  nls_numeric_characters='");
+  strcat(requete,v_numeric_characters);
+  strcat(requete,"'");
+  Message_printDebug(LOG,"%s() schema=%s, requete : %s\n", nomFonction, nomBase, requete);
+  EXEC SQL at :nomBase EXECUTE IMMEDIATE :requete;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur ALTER SESSION %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+
+  // tentatives sans succès pour avoir des NLS différents sur des schémas différents
+  // en multiconnexions
+  //EXEC SQL at :nomBase PREPARE q FROM :requete;
+  //EXEC SQL at :nomBase EXECUTE q;
+  #if 0
+  EXEC SQL at :nomBase EXECUTE
+    DECLARE
+      pl_date_format varchar2(50) := :v_date_format;
+      request varchar2(1000) := 'alter session set nls_numeric_characters=''. ''';
+    BEGIN
+      // select nls_date_format from nls_session_parameters;
+      execute immediate (request);
+    END;
+  END-EXEC;
+  #endif
+  #if 0
+  EXEC SQL at :nomBase EXECUTE
+    DECLARE
+      pl_date_format varchar2(50) := :v_date_format;
+      request varchar2(1000) := 'alter session set nls_numeric_characters=''. ''';
+      i integer;
+      x integer;
+    BEGIN
+      i := dbms_sql.open_cursor;
+      dbms_sql.parse (i,'alter session set nls_numeric_characters=''. ''',dbms_sql.v7);
+      x := dbms_sql.execute(i);
+      dbms_sql.close_cursor(i);
+    EXCEPTION
+      when others then
+        if dbms_sql.is_open(i) then
+          dbms_sql.close_cursor(i);
+        end if;
+        raise;
+    END;
+  END-EXEC;
+  #endif
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// recupère le format des dates pour la session
+//************************************************************************
+int Cnxora_getFormatDate(Cnxora*  cox, char* formatDateOracle)
+{
+  int     ret = 0;
+  char*   nomBase = cox->nomBase;
+  IN();
+  if (formatDateOracle == NULL) {
+    Erreur_set (CLA_APP, nomFonction, "Variable formatDateOracle est NULL");
+    ret = CODE_FIN_ERREUR_APPLICATIVE;
+    goto XIT;
+  }
+  formatDateOracle[0] = 0x00;
+  EXEC SQL at :nomBase select nls_date_format into :formatDateOracle from nls_session_parameters;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur select NLS_DATE_FORMAT %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// modifie la session pour le format des dates
+//************************************************************************
+int Cnxora_setFormatDate (Cnxora*  cox, char* date_format)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  char  v_date_format[50+1];
+  char  requete[2000+1];
+  IN();
+  memset(requete,0,2000);
+  memset(v_date_format,0,50);
+  if (date_format == NULL) {
+    Erreur_set (CLA_ORA, nomFonction, "date_format est null", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_APPLICATIVE;
+    goto XIT;
+  }
+  else {
+    strncpy (v_date_format, date_format, 50); // format par defaut
+  }
+  strcpy(requete,"alter session set nls_date_format='");
+  strcat(requete,v_date_format);
+  strcat(requete,"'");
+  //printf("%s() schema=%s, requete : %s\n", nomFonction, nomBase, requete);
+  EXEC SQL at :nomBase execute immediate :requete;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur ALTER SESSION %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// modifie la session pour le format des dates dans les Objets pour les
+// conversions entre OCIDate* et char
+//************************************************************************
+int Cnxora_setFormatDateContextObject (Cnxora* cox, char *new_format, char *new_lang)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL at :nomBase CONTEXT OBJECT OPTION SET DATEFORMAT, DATELANG
+                          to :new_format, :new_lang;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur CONTEXT OBJECT OPTION SET  %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+
+//************************************************************************
+// modifie la session pour le format des dates
+//************************************************************************
+int Cnxora_setNumericCharacters(Cnxora*  cox)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL at :nomBase alter session
+    set nls_numeric_characters='. ';
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur ALTER SESSION %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+
+//************************************************************************
+// permet l'enregistrement des messages PL/SQL produits par dbms_output
+//************************************************************************
+int Cnxora_dbms_output_enable(Cnxora*  cox)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  // démarrage du stockage des messages PL/SQL produits par dbms_output
+  EXEC SQL at :nomBase EXECUTE
+  BEGIN
+    dbms_output.disable();
+    dbms_output.enable(L_dbms_output_buffer);
+  end;
+  END-EXEC;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur dbms_output.enable %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+
+//************************************************************************
+// arrete l'enregistrement des messages PL/SQL produits par dbms_output
+//************************************************************************
+int Cnxora_dbms_output_disable(Cnxora*  cox)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL at :nomBase EXECUTE
+  begin
+    dbms_output.disable();
+  end;
+  END-EXEC;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur dbms_output.disable %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// récupère les messages PL/SQL produits par dbms_output
+// Nécessite d'abord l'appel à dbms_output_enable()
+//************************************************************************
+int Cnxora_get_dbms_output(Cnxora*  cox, char* dbms_output_buffer, int* n_lines)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  // pour recuperer les messages produits en PL/SQL par dbms_output
+  char* loc_dbms_output_buffer = NULL;
+  char  loc_line[250+1];
+  int   loc_done = 0;
+  short ind_loc_line = 0;
+  short ind_loc_done = 0;
+  int   loc_n_lines = 0;
+  IN();
+  loc_dbms_output_buffer = malloc((L_dbms_output_buffer+1)*sizeof(char));
+  memset (loc_dbms_output_buffer, 0, (L_dbms_output_buffer+1)*sizeof(char));
+  Message_printDebug("MALLOC","%s(), loc_dbms_output_buffer: 0x%x, %d",nomFonction,loc_dbms_output_buffer,(L_dbms_output_buffer+1)*sizeof(char));
+  // recuperation des messages dbms_output
+  int l_done;
+  do
+  {
+    memset(loc_line,0,250+1);
+    EXEC SQL at :nomBase EXECUTE
+    declare
+      l_done    number;
+      l_line    varchar2(250) := '';
+    begin
+      dbms_output.get_line(l_line, l_done);
+      :loc_line:ind_loc_line := rtrim(l_line);
+      :loc_done:ind_loc_done := l_done;
+    end;
+    END-EXEC;
+    SQL_ERREUR {
+      Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur recup messages dbms_output %s", SQL_LIB_ERREUR);
+      ret = CODE_FIN_ERREUR_ORACLE;
+      goto XIT;
+    }
+    strcat (loc_dbms_output_buffer,loc_line);
+    Utile_rtrim(loc_dbms_output_buffer);
+    strcat (loc_dbms_output_buffer,DEFAULT_EOL);
+    loc_n_lines += 1;
+  } while (loc_done==0 && strlen(loc_dbms_output_buffer) < L_dbms_output_buffer);
+  *n_lines = loc_n_lines;
+  if (dbms_output_buffer) strcpy(dbms_output_buffer, loc_dbms_output_buffer);
+ XIT:
+  Message_printDebug("FREE","%s(), loc_dbms_output_buffer: 0x%x",nomFonction,loc_dbms_output_buffer);
+  if (loc_dbms_output_buffer) { free(loc_dbms_output_buffer); loc_dbms_output_buffer = NULL; }
+  OUT(ret);
+  return ret;
+}
+
+
+//************************************************************************
+// Calcule les stats sur une table d'un schéma
+//************************************************************************
+int   Cnxora_gather_table_stats (Cnxora* cox, char* userora, char* tabora)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL at :nomBase EXECUTE
+  begin
+    dbms_stats.gather_table_stats (ownname         => :userora,
+                                  tabname          => :tabora,
+                                  estimate_percent => Default_stats_percent,
+                                  cascade          => true);
+    // cascade : calcule les stats sur l'index aussi
+  end;
+  END-EXEC;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur dbms_stats.gather_table_stats %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+ XIT:
+  OUT(ret);
+  return ret;
+}
+
+//************************************************************************
+// Calcule les stats sur une table d'un schéma
+//************************************************************************
+int   Cnxora_gather_index_stats (Cnxora* cox, char* userora, char* indora)
+{
+  int   ret = 0;
+  char* nomBase = cox->nomBase;
+  IN();
+  EXEC SQL at :nomBase EXECUTE
+  begin
+    dbms_stats.gather_index_stats (ownname         => :userora,
+                                  indname          => :indora,
+                                  estimate_percent => Default_stats_percent);
+  end;
+  END-EXEC;
+  SQL_ERREUR {
+    Erreur_set (CLA_ORA, nomFonction, "erreur ORACLE sur dbms_stats.gather_index_stats %s", SQL_LIB_ERREUR);
+    ret = CODE_FIN_ERREUR_ORACLE;
+    goto XIT;
+  }
+ XIT:
+  OUT(ret);
+  return ret;
+}

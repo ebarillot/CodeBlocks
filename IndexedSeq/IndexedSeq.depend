@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1446667744 source:d:\emmanuel\developpements\codeblocks\indexedseq\indexedseq\main.c
+	<stdio.h>
+	<stdlib.h>
+
+1446667744 source:d:\emmanuel\developpements\codeblocks\indexedseq\main.c
+	<stdio.h>
+	<stdlib.h>
+
+1483285929 source:d:\emmanuel\developpements\codeblocks\indexedseq\iseq.c
+	<stdio.h>
+	<string.h>
+	"ISeq.h"
+
+1483284409 d:\emmanuel\developpements\codeblocks\indexedseq\iseq.h
+	<stdlib.h>
+

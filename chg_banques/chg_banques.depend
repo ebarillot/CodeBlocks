@@ -1,0 +1,290 @@
+# depslib dependency file v1.0
+1275584606 source:d:\emmanuel\developpements\codeblocks\chg_banques\astring.c
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<string.h>
+	<signal.h>
+	<ortutil.h>
+	<ortproc.h>
+	<exploit.h>
+	"Cerr.h"
+	"utile.h"
+	"mallocCtl.h"
+	"Astring.h"
+
+1194275615 "
+
+1275584630 d:\emmanuel\developpements\codeblocks\chg_banques\cerr.h
+	"List.h"
+	"exploit.h"
+
+1108545609 d:\emmanuel\developpements\codeblocks\chg_banques\list.h
+
+1137598464 d:\emmanuel\developpements\codeblocks\chg_banques\utile.h
+
+1275584660 d:\emmanuel\developpements\codeblocks\chg_banques\mallocctl.h
+	<stdlib.h>
+	<stdio.h>
+	<errno.h>
+
+1275585393 
+
+1137168081 d:\emmanuel\developpements\codeblocks\chg_banques\astring.h
+	"Cerr.h"
+
+1275584746 source:d:\emmanuel\developpements\codeblocks\chg_banques\cerr.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<stdarg.h>
+	<exploit.h>
+	"Cerr.h"
+	"utile.h"
+	"mallocCtl.h"
+
+1275584826 .h"
+
+1275584788 source:d:\emmanuel\developpements\codeblocks\chg_banques\fichier.c
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<string.h>
+	<signal.h>
+	<ortutil.h>
+	<ortproc.h>
+	<exploit.h>
+	<errno.h>
+	"Cerr.h"
+	"utile.h"
+	"mallocCtl.h"
+	"Fichier.h"
+
+1194275615 d:\emmanuel\developpements\codeblocks\chg_banques\fichier.h
+	<stdio.h>
+	<sys/types.h>
+	<sys/stat.h>
+	"Cerr.h"
+	"Astring.h"
+
+1275584826 source:d:\emmanuel\developpements\codeblocks\chg_banques\list.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<exploit.h>
+	"List.h"
+	"Cerr.h"
+	"mallocCtl.h"
+
+1193415919 source:d:\emmanuel\developpements\codeblocks\chg_banques\qsort.c
+	<stdlib.h>
+	<string.h>
+	"Qsort.h"
+	"utile.h"
+	"temps.h"
+
+1182413765 d:\emmanuel\developpements\codeblocks\chg_banques\qsort.h
+
+1275585393 d:\emmanuel\developpements\codeblocks\chg_banques\temps.h
+	<sys/time.h>
+	<sys/times.h>
+	<time.h>
+
+1275585480 source:d:\emmanuel\developpements\codeblocks\chg_banques\chg_banques.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<string.h>
+	<signal.h>
+	<stdarg.h>
+	"chg_banques.h"
+	"mallocCtl.h"
+	"Cerr.h"
+	"utile.h"
+	"Fichier.h"
+	<exploit.h>
+	"Banques.h"
+	"ConnexionOracle.h"
+
+1275498235 Oracle.h"
+
+1275487475 d:\emmanuel\developpements\codeblocks\chg_banques\chg_banques.h
+
+1275498235 d:\emmanuel\developpements\codeblocks\chg_banques\banques.h
+	"ConnexionOracle.h"
+
+1137515674 d:\emmanuel\developpements\codeblocks\chg_banques\connexionoracle.h
+
+1275669899 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/Astring.c
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<string.h>
+	<signal.h>
+	<ortutil.h>
+	<ortproc.h>
+	<exploit.h>
+	"Cerr.h"
+	"utile.h"
+	"mallocCtl.h"
+	"Astring.h"
+
+1275668636 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/Cerr.h
+	"List.h"
+	"exploit.h"
+
+1108542009 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/List.h
+
+1275671159 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/utile.h
+	<sys/time.h>
+	<unistd.h>
+
+1275669108 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/mallocCtl.h
+	<sys/resource.h>
+	<stdlib.h>
+	<stdio.h>
+	<errno.h>
+
+1137164481 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/Astring.h
+	"Cerr.h"
+
+1275669971 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/Cerr.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<stdarg.h>
+	<string.h>
+	<exploit.h>
+	"Cerr.h"
+	"utile.h"
+	"mallocCtl.h"
+
+1275679982 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/Fichier.c
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<string.h>
+	<signal.h>
+	<exploit.h>
+	<errno.h>
+	"Cerr.h"
+	"utile.h"
+	"mallocCtl.h"
+	"Fichier.h"
+
+1194272015 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/Fichier.h
+	<stdio.h>
+	<sys/types.h>
+	<sys/stat.h>
+	"Cerr.h"
+	"Astring.h"
+
+1275670679 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/List.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<exploit.h>
+	"List.h"
+	"Cerr.h"
+	"mallocCtl.h"
+
+1275665870 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/Qsort.c
+	<stdlib.h>
+	<string.h>
+	"Qsort.h"
+	"utile.h"
+	"temps.h"
+
+1182413765 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/Qsort.h
+
+1275669395 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/temps.h
+	<sys/resource.h>
+	<sys/time.h>
+	<time.h>
+	<sys/types.h>
+	<unistd.h>
+	<sys/times.h>
+
+1275682963 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/chg_banques.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<string.h>
+	<signal.h>
+	<stdarg.h>
+	<unistd.h>
+	"chg_banques.h"
+	"mallocCtl.h"
+	"Cerr.h"
+	"utile.h"
+	"Fichier.h"
+	<exploit.h>
+	"Banques.h"
+	"ConnexionOracle.h"
+
+1275679800 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/chg_banques.h
+
+1275498235 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/Banques.h
+	"ConnexionOracle.h"
+
+1137512074 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/ConnexionOracle.h
+
+1275671538 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/mallocCtl.c
+	<sys/resource.h>
+	<stdlib.h>
+	<stdio.h>
+	<errno.h>
+	<string.h>
+	"Cerr.h"
+	"utile.h"
+	"mallocCtl.h"
+
+1275669759 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/temps.c
+	<string.h>
+	<stdio.h>
+	<stdlib.h>
+	"temps.h"
+
+1275671671 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/exploit/exploit.c
+	<stdio.h>
+	<stdarg.h>
+	<time.h>
+	<ctype.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	"exploit.h"
+	<sys/time.h>
+	<unistd.h>
+
+1265903568 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/exploit/exploit.h
+	<stdio.h>
+
+1275671114 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/traceTP/traceTP.c
+	<stdio.h>
+	<time.h>
+	<stdarg.h>
+	<stdlib.h>
+	<string.h>
+	<signal.h>
+	"traceTP.h"
+
+1275671013 /home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/traceTP/traceTP.h
+	<stdio.h>
+	<sys/time.h>
+	<unistd.h>
+
+1275671400 source:/home/emmanuel/Documents/Developpements/CodeBlocks/chg_banques/utile.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<signal.h>
+	<errno.h>
+	<time.h>
+	<stdarg.h>
+	<exploit.h>
+	"Cerr.h"
+	"utile.h"
+	"mallocCtl.h"
+	<traceTP.h>
+

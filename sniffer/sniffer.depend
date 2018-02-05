@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1286475377 source:/home/emmanuel/Documents/Developpements/CodeBlocks/sniffer/main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<sys/types.h>
+	<sys/socket.h>
+	<net/route.h>
+	<sys/ioctl.h>
+	<net/if.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+	<unistd.h>
+

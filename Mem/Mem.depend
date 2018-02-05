@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1446667744 source:d:\emmanuel\developpements\codeblocks\indexedseq\mem\main.c
+	<stdio.h>
+	<stdlib.h>
+
+1446667744 source:d:\emmanuel\developpements\codeblocks\mem\main.c
+	<stdio.h>
+	<stdlib.h>
+

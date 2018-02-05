@@ -1,0 +1,120 @@
+##################################################################
+# Environnement PRO*C
+# ( inclut les librairies oracle, les suffixes par default )
+# Affecte LIBHOME, PROLDLIBS, PLSPCCFLAGS (redefinition possible)
+##################################################################
+include $(ADMORA)/makeproc_$(ORTORAVERSION)_$(ORTMACHINE)
+include $(ORTOSTYPE).makefile
+
+# nom du programme
+BATCH_PRG = test_Hmap
+
+batch: $(BATCH_PRG)
+all: batch
+
+
+##################################################################
+# Options de compilation
+#
+# OPTPROF=-pg
+# OPTWARN=-Wall
+# OPTIONCC = -DDEBUG
+# OPTIONCC = -O4
+# OPTIONCC = -O
+OPTIONDEBUG = -g
+OPTIONCC = $(OPTIONDEBUG) $(OPTWARN)
+# OPTIONCC = $(OPTPROF)
+
+CCOOPT=$(OPTIONCC) $(OPTIONCC_LOCAL) -I. -I$(LIB_COMMONS_INCDIR)
+CPPOPT=$(CCOOPT)
+
+# toujours utile ?
+#  -I $(ORACLE_HOME)/rdbms/public
+
+PLSPCCFLAGS = \
+  ireclen=1200 oreclen=1200 sqlcheck=semantics \
+  userid=$(USERNAMEORA)/$(PASSWORDORA) \
+  common_parser=yes hold_cursor=yes MODE=ORACLE unsafe_null=yes DBMS=V8
+
+# common_parser=yes	: permet au precompilateur pro*c de comprendre la fonction row_number()
+# à ajouter à PLSPCCFLAGS pour modifier la conversion des VARCHAR2 (base) en char[n] (langage hote)
+#char_map=string
+#
+##################################################################
+
+
+
+##################################################################
+# debut LIB_COMMONS
+# nom de la librairie des objets communs
+LIB_COMMONS_VER=1
+#LIB_COMMONS_NAME=EBCommons.$(LIB_COMMONS_VER)
+LIB_COMMONS_NAME=EBCommons
+# pour aller chercher localement
+LIB_COMMONS_DIR=..
+LIB_COMMONS_INCDIR=..
+# pour aller chercher dans le répertoire du projet
+#LIB_COMMONS_DIR=$(PROJET)/lib
+#LIB_COMMONS_INCDIR=$(PROJET)/include/$(LIB_COMMONS_NAME)
+#
+# fin LIB_COMMONS
+##################################################################
+
+
+
+##################################################################
+# Debut autres modules
+INCLUDES_OUTOF_LIB = $(ORTINC)/exploit.h
+# fin autres modules
+##################################################################
+
+
+
+##################################################################
+# Debut BATCH_PRG
+#
+# au besoin, changer le numero de version de la lib EllixiumB
+LIBRARY =  -l$(LIB_COMMONS_NAME) $(ORTLIBORA)/ortproc.a $(ORTLIBORA)/ortutil.a $(ORTOBJORA)/verifcode.o $(ORTOBJ)/orstring.o -lm -lrt -lexploit
+LIBRARY_PATH = -L$(ORACLE_HOME)/lib -L$(LIB_COMMONS_DIR) -L$(ORTLIB)
+
+
+INCLUDES = $(INCLUDES_OUTOF_LIB) $(LIB_COMMONS_INCDIR)
+
+BATCH_SRC = \
+  $(BATCH_PRG).c
+
+# liste des Pro*C
+BATCH_SRC_PC =
+
+BATCH_INC =
+
+BATCH_OBJ = $(BATCH_SRC:.c=.o) $(BATCH_SRC_PC:.pc=.o)
+
+
+$(BATCH_OBJ) : $(BATCH_INC) $(INCLUDES) makefile
+
+
+# Creation de l'executable
+$(BATCH_PRG): $(BATCH_OBJ) $(BATCH_INC) $(INCLUDES) makefile
+	@echo "LD_LIBRARY_PATH: " $(LD_LIBRARY_PATH)
+	@echo "Edition de lien en cours ..."
+	$(CC) $(OPTIONDEBUG) $(OPTPROF) $(CCOOPTELF) $(LIBRARY_PATH) -o $@ $(BATCH_OBJ) $(LIBRARY) $(PROLDLIBS)
+	@echo "Librairies dynamiques liées ..."
+	LD_LIBRARY_PATH=..:/ort/ora11.2/lib:/u01/app/oracle/product/11.2.0/client_1_32/lib:/ort/ora11.2/lib:/u01/app/oracle/product/11.2.0/client_1_32/lib:$(ORTLIB); ldd ./$(BATCH_PRG)
+
+#	$(CC) $(OPTPROF) $(CCOOPTELF) $(LIBRARY_PATH) -Wl "-soname libEBCommons.so -soname libEllixiumB.so" -o $@ $(BATCH_OBJ) $(LIBRARY) $(PROLDLIBS)
+#
+# Attention à livrer libexploit en PROD (projet dpacommun)
+#
+# fin BATCH_PRG
+##################################################################
+
+
+
+clean:
+	rm -f *~ *.o *.so *.i *.lis $(BATCH_PRG)
+
+
+#-----------------------------------------------------------------------------
+# FIN DU MAKEFILE
+#-----------------------------------------------------------------------------
